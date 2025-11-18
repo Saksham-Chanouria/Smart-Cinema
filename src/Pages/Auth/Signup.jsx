@@ -1,8 +1,12 @@
 import {Link, NavLink} from "react-router-dom";
 import {useForm} from "react-hook-form";
+import {useNavigate} from "react-router-dom";
 
 let Signup = () =>{
-    const {register, handleSubmit} = useForm();
+    const {register, handleSubmit,watch, formState:{errors}} = useForm();
+    const navigate = useNavigate();
+
+    const password = watch("password")
 
     function formSubmit(data) {
         console.log(data)
@@ -15,9 +19,15 @@ let Signup = () =>{
             },
             body: JSON.stringify(data)
         })
-            .then(res => res.text())
+            .then(res => res.json())
             .then(ans => {
-                console.log(ans);
+                console.log(ans)
+                if(ans.statusCode==201){
+                    navigate("/login")
+                }
+                else{
+                    // toast.error("Login Failed");
+                }
             })
     }
     return(
@@ -36,8 +46,23 @@ let Signup = () =>{
                                     <input type="text" {...register('fullName')} placeholder="Enter Your Full Name" id="fullName" required/>
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="email1">Email<span>*</span></label>
-                                    <input type="text" {...register('email')} placeholder="Enter Your Email" id="email1" required/>
+                                    <label htmlFor="email1">Email <span>*</span></label>
+
+                                    <input
+                                        type="text"
+                                        id="email1"
+                                        placeholder="Enter Your Email"
+                                        {...register("email", {
+                                            required: "Email is required",
+                                            pattern: {
+                                                value: /^[a-zA-Z0-9._%+-]+@gmail\.com$/
+                                            }
+                                        })}
+                                    />
+
+                                    {errors.email && (
+                                        <p className="error-message">{errors.email.message}</p>
+                                    )}
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="pass1">Password<span>*</span></label>
@@ -45,10 +70,17 @@ let Signup = () =>{
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="pass2">Confirm Password<span>*</span></label>
-                                    <input type="password" placeholder="Password" id="pass2" required/>
+                                    <input type="password" {...register("confirmPassword",{required:"Confirm Password is required",validate: value=> value==password || ""})} placeholder="Password" id="pass2" required/>
                                 </div>
                                 <div className="form-group checkgroup">
-                                    <input {...register('T&C')} type="checkbox" id="bal"/>
+                                    <input
+                                        type="checkbox"
+                                        id="terms"
+                                        {...register("terms", {
+                                            required: true
+                                        })}
+                                        className={errors.terms ? "checkbox-error" : ""}
+                                    />
                                     <label htmlFor="bal">I agree to the <NavLink as={Link} to="#0">Terms, Privacy Policy</NavLink> and <a
                                         href="#0">Fees</a></label>
                                 </div>
