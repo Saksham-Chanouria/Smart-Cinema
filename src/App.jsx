@@ -3,6 +3,8 @@ import PublicLayout from "./components/layout/PublicLayout.jsx";
 import Home from "./components/Home/Home.jsx";
 import Signup from "./Pages/Auth/Signup.jsx";
 import Login from "./Pages/Auth/Login.jsx";
+import NotFound from "./Pages/Utils/NotFound.jsx";
+
 
 
 function App() {
@@ -20,6 +22,8 @@ function App() {
                     <Route path={"login"} element={<Login/>}></Route>
                     <Route path={"signup"} element={<Signup/>}></Route>
                 </Route>
+
+                <Route path="*" element={<NotFound/>}></Route>
             </Routes>
         </BrowserRouter>
     </>

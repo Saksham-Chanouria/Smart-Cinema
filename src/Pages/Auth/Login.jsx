@@ -1,6 +1,11 @@
 import {Link} from 'react-router-dom'
+import {useForm} from 'react-hook-form'
 
 let Login = () => {
+    const {register, handleSubmit} = useForm()
+    function formSubmit(data) {
+        console.log(data)
+    }
     return (
         <>
             <section className="account-section bg_img" data-background="assets/images/account/account-bg.jpg">
@@ -11,17 +16,17 @@ let Login = () => {
                                 <span className="cate">hello</span>
                                 <h2 className="title">welcome back</h2>
                             </div>
-                            <form className="account-form">
+                            <form className="account-form" onSubmit={handleSubmit(formSubmit)}>
                                 <div className="form-group">
                                     <label htmlFor="email2">Email<span>*</span></label>
-                                    <input type="text" placeholder="Enter Your Email" id="email2" required/>
+                                    <input type="text" {...register('email')} placeholder="Enter Your Email" id="email2" required/>
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="pass3">Password<span>*</span></label>
-                                    <input type="password" placeholder="Password" id="pass3" required/>
+                                    <input type="password" {...register('password')} placeholder="Password" id="pass3" required/>
                                 </div>
                                 <div className="form-group checkgroup">
-                                    <input type="checkbox" id="bal2" required checked/>
+                                    <input type="checkbox" id="bal2" required/>
                                     <label htmlFor="bal2">remember password</label>
                                     <a href="#0" className="forget-pass">Forget Password</a>
                                 </div>
