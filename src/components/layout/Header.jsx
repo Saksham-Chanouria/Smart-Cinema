@@ -21,6 +21,7 @@ let Header = () =>{
     }, []);
     return(
         <>
+
             <header className={`header-section ${isActive ? "header-active" : ""}`}>
                 <div className="container">
                     <div className="header-wrapper">
@@ -113,7 +114,7 @@ let Header = () =>{
                                 <Link as={Link} to="contact.html">contact</Link>
                             </li>
                             <li className="header-button pr-0">
-                                <Link as={Link} to="sign-up.html">join us</Link>
+                                <Link as={Link} to="/signup">join us</Link>
                             </li>
                         </ul>
                         <div className="header-bar d-lg-none">

@@ -1,6 +1,8 @@
 import {BrowserRouter,Routes,Route} from "react-router-dom";
 import PublicLayout from "./components/layout/PublicLayout.jsx";
 import Home from "./components/Home/Home.jsx";
+import Signup from "./Pages/Auth/Signup.jsx";
+import Login from "./Pages/Auth/Login.jsx";
 
 
 function App() {
@@ -15,8 +17,8 @@ function App() {
                 </Route>
 
                 <Route path="/">
-                    <Route path={"login"}></Route>
-                    <Route path={"signup"}></Route>
+                    <Route path={"login"} element={<Login/>}></Route>
+                    <Route path={"signup"} element={<Signup/>}></Route>
                 </Route>
             </Routes>
         </BrowserRouter>

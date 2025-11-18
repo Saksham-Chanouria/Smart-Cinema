@@ -1,6 +1,7 @@
 let Home = () =>{
     return (
         <>
+            <div style={{height:"50px"}}></div>
             <div style={{ padding: "40px", textAlign: "center" }}>
                 <h1>Welcome to Smart Cinema</h1>
                 <p style={{ marginTop: "15px", fontSize: "18px" }}>
