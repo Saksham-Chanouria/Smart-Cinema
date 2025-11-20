@@ -1,154 +1,198 @@
-jQuery(document).ready(function($){
-	//set animation timing
-	var animationDelay = 2500,
-		//loading bar effect
-		barAnimationDelay = 3800,
-		barWaiting = barAnimationDelay - 3000, //3000 is the duration of the transition on the loading bar - set in the scss/css file
-		//letters effect
-		lettersDelay = 50,
-		//type effect
-		typeLettersDelay = 150,
-		selectionDuration = 500,
-		typeAnimationDelay = selectionDuration + 800,
-		//clip effect 
-		revealDuration = 600,
-		revealAnimationDelay = 1500;
-	
-	initHeadline();
-	
+document.addEventListener("DOMContentLoaded", () => {
 
-	function initHeadline() {
-		//insert <i> element for each letter of a changing word
-		singleLetters($('.cd-headline.letters').find('b'));
-		//initialise headline animation
-		animateHeadline($('.cd-headline'));
-	}
+    const animationDelay = 2500;
+    const barAnimationDelay = 3800;
+    const barWaiting = barAnimationDelay - 3000;
+    const lettersDelay = 50;
+    const typeLettersDelay = 150;
+    const selectionDuration = 500;
+    const typeAnimationDelay = selectionDuration + 800;
+    const revealDuration = 600;
+    const revealAnimationDelay = 1500;
 
-	function singleLetters($words) {
-		$words.each(function(){
-			var word = $(this),
-				letters = word.text().split(''),
-				selected = word.hasClass('is-visible');
-			for (i in letters) {
-				if(word.parents('.rotate-2').length > 0) letters[i] = '<em>' + letters[i] + '</em>';
-				letters[i] = (selected) ? '<i class="in">' + letters[i] + '</i>': '<i>' + letters[i] + '</i>';
-			}
-		    var newLetters = letters.join('');
-		    word.html(newLetters).css('opacity', 1);
-		});
-	}
+    initHeadline();
 
-	function animateHeadline($headlines) {
-		var duration = animationDelay;
-		$headlines.each(function(){
-			var headline = $(this);
-			
-			if(headline.hasClass('loading-bar')) {
-				duration = barAnimationDelay;
-				setTimeout(function(){ headline.find('.cd-words-wrapper').addClass('is-loading') }, barWaiting);
-			} else if (headline.hasClass('clip')){
-				var spanWrapper = headline.find('.cd-words-wrapper'),
-					newWidth = spanWrapper.width() + 10
-				spanWrapper.css('width', newWidth);
-			} else if (!headline.hasClass('type') ) {
-				//assign to .cd-words-wrapper the width of its longest word
-				var words = headline.find('.cd-words-wrapper b'),
-					width = 0;
-				words.each(function(){
-					var wordWidth = $(this).width();
-				    if (wordWidth > width) width = wordWidth;
-				});
-				headline.find('.cd-words-wrapper').css('width', width);
-			};
+    function initHeadline() {
+        const words = document.querySelectorAll(".cd-headline.letters b");
+        singleLetters(words);
 
-			//trigger animation
-			setTimeout(function(){ hideWord( headline.find('.is-visible').eq(0) ) }, duration);
-		});
-	}
+        const headlines = document.querySelectorAll(".cd-headline");
+        animateHeadline(headlines);
+    }
 
-	function hideWord($word) {
-		var nextWord = takeNext($word);
-		
-		if($word.parents('.cd-headline').hasClass('type')) {
-			var parentSpan = $word.parent('.cd-words-wrapper');
-			parentSpan.addClass('selected').removeClass('waiting');	
-			setTimeout(function(){ 
-				parentSpan.removeClass('selected'); 
-				$word.removeClass('is-visible').addClass('is-hidden').children('i').removeClass('in').addClass('out');
-			}, selectionDuration);
-			setTimeout(function(){ showWord(nextWord, typeLettersDelay) }, typeAnimationDelay);
-		
-		} else if($word.parents('.cd-headline').hasClass('letters')) {
-			var bool = ($word.children('i').length >= nextWord.children('i').length) ? true : false;
-			hideLetter($word.find('i').eq(0), $word, bool, lettersDelay);
-			showLetter(nextWord.find('i').eq(0), nextWord, bool, lettersDelay);
+    function singleLetters(words) {
+        words.forEach(word => {
+            const text = word.textContent.trim().split("");
+            const isVisible = word.classList.contains("is-visible");
 
-		}  else if($word.parents('.cd-headline').hasClass('clip')) {
-			$word.parents('.cd-words-wrapper').animate({ width : '2px' }, revealDuration, function(){
-				switchWord($word, nextWord);
-				showWord(nextWord);
-			});
+            const letters = text.map(letter => {
+                if (word.closest(".rotate-2")) {
+                    return `<i><em>${letter}</em></i>`;
+                }
+                return isVisible ? `<i class="in">${letter}</i>` : `<i>${letter}</i>`;
+            });
 
-		} else if ($word.parents('.cd-headline').hasClass('loading-bar')){
-			$word.parents('.cd-words-wrapper').removeClass('is-loading');
-			switchWord($word, nextWord);
-			setTimeout(function(){ hideWord(nextWord) }, barAnimationDelay);
-			setTimeout(function(){ $word.parents('.cd-words-wrapper').addClass('is-loading') }, barWaiting);
+            word.innerHTML = letters.join("");
+            word.style.opacity = 1;
+        });
+    }
 
-		} else {
-			switchWord($word, nextWord);
-			setTimeout(function(){ hideWord(nextWord) }, animationDelay);
-		}
-	}
+    function animateHeadline(headlines) {
+        let duration = animationDelay;
 
-	function showWord($word, $duration) {
-		if($word.parents('.cd-headline').hasClass('type')) {
-			showLetter($word.find('i').eq(0), $word, false, $duration);
-			$word.addClass('is-visible').removeClass('is-hidden');
+        headlines.forEach(headline => {
+            const wrapper = headline.querySelector(".cd-words-wrapper");
 
-		}  else if($word.parents('.cd-headline').hasClass('clip')) {
-			$word.parents('.cd-words-wrapper').animate({ 'width' : $word.width() + 10 }, revealDuration, function(){ 
-				setTimeout(function(){ hideWord($word) }, revealAnimationDelay); 
-			});
-		}
-	}
+            if (headline.classList.contains("loading-bar")) {
+                duration = barAnimationDelay;
+                setTimeout(() => wrapper.classList.add("is-loading"), barWaiting);
 
-	function hideLetter($letter, $word, $bool, $duration) {
-		$letter.removeClass('in').addClass('out');
-		
-		if(!$letter.is(':last-child')) {
-		 	setTimeout(function(){ hideLetter($letter.next(), $word, $bool, $duration); }, $duration);  
-		} else if($bool) { 
-		 	setTimeout(function(){ hideWord(takeNext($word)) }, animationDelay);
-		}
+            } else if (headline.classList.contains("clip")) {
+                wrapper.style.width = wrapper.offsetWidth + 10 + "px";
 
-		if($letter.is(':last-child') && $('html').hasClass('no-csstransitions')) {
-			var nextWord = takeNext($word);
-			switchWord($word, nextWord);
-		} 
-	}
+            } else if (!headline.classList.contains("type")) {
+                const words = wrapper.querySelectorAll("b");
+                let maxWidth = 0;
 
-	function showLetter($letter, $word, $bool, $duration) {
-		$letter.addClass('in').removeClass('out');
-		
-		if(!$letter.is(':last-child')) { 
-			setTimeout(function(){ showLetter($letter.next(), $word, $bool, $duration); }, $duration); 
-		} else { 
-			if($word.parents('.cd-headline').hasClass('type')) { setTimeout(function(){ $word.parents('.cd-words-wrapper').addClass('waiting'); }, 200);}
-			if(!$bool) { setTimeout(function(){ hideWord($word) }, animationDelay) }
-		}
-	}
+                words.forEach(w => {
+                    const wordWidth = w.offsetWidth;
+                    if (wordWidth > maxWidth) maxWidth = wordWidth;
+                });
 
-	function takeNext($word) {
-		return (!$word.is(':last-child')) ? $word.next() : $word.parent().children().eq(0);
-	}
+                wrapper.style.width = maxWidth + "px";
+            }
 
-	function takePrev($word) {
-		return (!$word.is(':first-child')) ? $word.prev() : $word.parent().children().last();
-	}
+            setTimeout(() => hideWord(wrapper.querySelector(".is-visible")), duration);
+        });
+    }
 
-	function switchWord($oldWord, $newWord) {
-		$oldWord.removeClass('is-visible').addClass('is-hidden');
-		$newWord.removeClass('is-hidden').addClass('is-visible');
-	}
+    function hideWord(word) {
+        const nextWord = takeNext(word);
+        const headline = word.closest(".cd-headline");
+
+        if (headline.classList.contains("type")) {
+            const wrapper = word.parentElement;
+            wrapper.classList.add("selected");
+            wrapper.classList.remove("waiting");
+
+            setTimeout(() => {
+                wrapper.classList.remove("selected");
+                word.classList.remove("is-visible");
+                word.classList.add("is-hidden");
+
+                word.querySelectorAll("i").forEach(i => {
+                    i.classList.remove("in");
+                    i.classList.add("out");
+                });
+
+            }, selectionDuration);
+
+            setTimeout(() => showWord(nextWord, typeLettersDelay), typeAnimationDelay);
+
+        } else if (headline.classList.contains("letters")) {
+            const longer = word.children.length >= nextWord.children.length;
+
+            hideLetter(word.querySelector("i"), word, longer, lettersDelay);
+            showLetter(nextWord.querySelector("i"), nextWord, longer, lettersDelay);
+
+        } else if (headline.classList.contains("clip")) {
+
+            const wrapper = word.closest(".cd-words-wrapper");
+            wrapper.style.transition = `${revealDuration}ms`;
+
+            wrapper.style.width = "2px";
+
+            setTimeout(() => {
+                switchWord(word, nextWord);
+                showWord(nextWord);
+            }, revealDuration);
+
+        } else if (headline.classList.contains("loading-bar")) {
+
+            const wrapper = word.closest(".cd-words-wrapper");
+            wrapper.classList.remove("is-loading");
+
+            switchWord(word, nextWord);
+
+            setTimeout(() => hideWord(nextWord), barAnimationDelay);
+            setTimeout(() => wrapper.classList.add("is-loading"), barWaiting);
+
+        } else {
+
+            switchWord(word, nextWord);
+            setTimeout(() => hideWord(nextWord), animationDelay);
+        }
+    }
+
+    function showWord(word, duration) {
+        const headline = word.closest(".cd-headline");
+
+        if (headline.classList.contains("type")) {
+            showLetter(word.querySelector("i"), word, false, duration);
+
+            word.classList.add("is-visible");
+            word.classList.remove("is-hidden");
+
+        } else if (headline.classList.contains("clip")) {
+            const wrapper = word.closest(".cd-words-wrapper");
+            wrapper.style.width = word.offsetWidth + 10 + "px";
+
+            setTimeout(() => hideWord(word), revealAnimationDelay);
+        }
+    }
+
+    function hideLetter(letter, word, bool, duration) {
+        if (!letter) return;
+
+        letter.classList.remove("in");
+        letter.classList.add("out");
+
+        const next = letter.nextElementSibling;
+
+        if (next) {
+            setTimeout(() => hideLetter(next, word, bool, duration), duration);
+        } else if (bool) {
+            setTimeout(() => hideWord(takeNext(word)), animationDelay);
+        }
+    }
+
+    function showLetter(letter, word, bool, duration) {
+        if (!letter) return;
+
+        letter.classList.add("in");
+        letter.classList.remove("out");
+
+        const next = letter.nextElementSibling;
+
+        if (next) {
+            setTimeout(() => showLetter(next, word, bool, duration), duration);
+        } else {
+            const headline = word.closest(".cd-headline");
+
+            if (headline.classList.contains("type")) {
+                setTimeout(() => word.parentElement.classList.add("waiting"), 200);
+            }
+
+            if (!bool) {
+                setTimeout(() => hideWord(word), animationDelay);
+            }
+        }
+    }
+
+    function takeNext(word) {
+        return word.nextElementSibling || word.parentElement.children[0];
+    }
+
+    function takePrev(word) {
+        return word.previousElementSibling || word.parentElement.lastElementChild;
+    }
+
+    function switchWord(oldWord, newWord) {
+        oldWord.classList.remove("is-visible");
+        oldWord.classList.add("is-hidden");
+
+        newWord.classList.remove("is-hidden");
+        newWord.classList.add("is-visible");
+    }
+
 });

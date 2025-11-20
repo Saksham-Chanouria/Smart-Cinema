@@ -19,9 +19,17 @@ let Header = () =>{
 
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
+
     return(
         <>
-
+            {/*<div className="preloader">*/}
+            {/*    <div className="preloader-inner">*/}
+            {/*        <div className="preloader-icon">*/}
+            {/*            <span></span>*/}
+            {/*            <span></span>*/}
+            {/*        </div>*/}
+            {/*    </div>*/}
+            {/*</div>*/}
             <header className={`header-section ${isActive ? "header-active" : ""}`}>
                 <div className="container">
                     <div className="header-wrapper">

@@ -1,10 +1,18 @@
 import {Link, NavLink} from "react-router-dom";
 import {useForm} from "react-hook-form";
 import {useNavigate} from "react-router-dom";
+import {useEffect} from "react";
+import background from "../../assets/images/account/account-bg.jpg"
+import { initPageScripts } from "../../assets/js/main.js";
 
 let Signup = () =>{
     const {register, handleSubmit,watch, formState:{errors}} = useForm();
     const navigate = useNavigate();
+
+
+    useEffect(() => {
+        initPageScripts();
+    }, []);
 
     const password = watch("password")
 
@@ -31,8 +39,9 @@ let Signup = () =>{
             })
     }
     return(
+        // ../
         <>
-            <section className="account-section bg_img" data-background="assets/images/account/account-bg.jpg">
+            <section className="account-section bg_img" style={{ backgroundImage: `url(${background})` }}>
                 <div className="container">
                     <div className="padding-top padding-bottom">
                         <div className="account-area">

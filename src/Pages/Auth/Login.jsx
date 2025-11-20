@@ -1,14 +1,32 @@
 import {Link} from 'react-router-dom'
 import {useForm} from 'react-hook-form'
+import {useNavigate} from 'react-router-dom'
+import background from "../../assets/images/account/account-bg.jpg"
+
 
 let Login = () => {
     const {register, handleSubmit} = useForm()
+    const navigate = useNavigate();
     function formSubmit(data) {
         console.log(data)
+        var url = "http://localhost:7011/api/auth/login";
+
+        fetch(url, {
+            method : "POST",
+            headers : {"Content-Type": "application/json"},
+            body : JSON.stringify(data)
+        })
+            .then(res => res.json())
+        .then(data => {
+            console.log(data)
+            if(data.success){
+                navigate("/home")
+            }
+        })
     }
     return (
         <>
-            <section className="account-section bg_img" data-background="assets/images/account/account-bg.jpg">
+            <section className="account-section bg_img" style={{ backgroundImage: `url(${background})` }}>
                 <div className="container">
                     <div className="padding-top padding-bottom">
                         <div className="account-area">
