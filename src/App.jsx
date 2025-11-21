@@ -4,6 +4,7 @@ import Home from "./components/Home/Home.jsx";
 import Signup from "./Pages/Auth/Signup.jsx";
 import Login from "./Pages/Auth/Login.jsx";
 import NotFound from "./Pages/Utils/NotFound.jsx";
+import PreLoader from "./components/layout/PreLoader.jsx";
 
 
 

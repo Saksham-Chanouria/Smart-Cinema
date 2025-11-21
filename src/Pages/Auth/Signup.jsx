@@ -1,46 +1,91 @@
 import {Link, NavLink} from "react-router-dom";
 import {useForm} from "react-hook-form";
 import {useNavigate} from "react-router-dom";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import background from "../../assets/images/account/account-bg.jpg"
 import { initPageScripts } from "../../assets/js/main.js";
+import {showSuccess, showWarning, showError, showServerError,showInputTooltipError} from "../../components/utils/alert.jsx";
+import PreLoader from "../../components/layout/PreLoader.jsx";
 
 let Signup = () =>{
-    const {register, handleSubmit,watch, formState:{errors}} = useForm();
+    const {register, handleSubmit,watch} = useForm();
     const navigate = useNavigate();
-
+    const [loading, setLoading] = useState(false);
+    const gmailRegex = /^[A-Za-z0-9._%+-]+@gmail\.com$/;
+    const [conPass, setConPass] = useState(false);
 
     useEffect(() => {
         initPageScripts();
     }, []);
 
     const password = watch("password")
+    const terms = watch("terms")
 
     function formSubmit(data) {
-        console.log(data)
+        console.log(terms);
+        if (!gmailRegex.test(data.email)) {
+            showInputTooltipError("Please enter a valid email address.");
+            return;
+        }
+        else if(!conPass){
+            showInputTooltipError("Passwords do not match.");
+            return;
+        }
+        else if(!terms){
+            showInputTooltipError("Please accept our terms");
+            return;
+        }
+        else
+        {
+            console.log(data)
+            setLoading(true);
 
-        var url = "http://localhost:7011/api/auth/signup";
-        fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        })
-            .then(res => res.json())
-            .then(ans => {
-                console.log(ans)
-                if(ans.statusCode==201){
-                    navigate("/login")
-                }
-                else{
-                    // toast.error("Login Failed");
-                }
+            var url = "http://localhost:7011/api/auth/signup";
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
             })
+                .then(res => res.json())
+                .then(ans => {
+                    console.log(ans)
+                    if (ans.statusCode == 201) {
+                        showSuccess("Account created successfully!");
+                        setTimeout(() => {
+                            setLoading(false);
+                            navigate("/login");
+                        }, 600);
+                    }
+
+                    else if (ans.statusCode == 400) {
+                        setLoading(false);
+                        showWarning(data.message);
+                    }
+
+                    else if (ans.statusCode == 409) {
+                        setLoading(false);
+                        showError("Email already exists!");
+                    }
+
+                    else if (ans.statusCode == 500) {
+                        setLoading(false);
+                        showServerError(data.message);
+                    }
+
+                    else {
+                        setLoading(false);
+                        showWarning("Unexpected error occurred");
+                    }
+                })
+        }
     }
     return(
         // ../
         <>
+            {loading && <PreLoader />}
+            {!loading && (
             <section className="account-section bg_img" style={{ backgroundImage: `url(${background})` }}>
                 <div className="container">
                     <div className="padding-top padding-bottom">
@@ -57,21 +102,9 @@ let Signup = () =>{
                                 <div className="form-group">
                                     <label htmlFor="email1">Email <span>*</span></label>
 
-                                    <input
-                                        type="text"
-                                        id="email1"
-                                        placeholder="Enter Your Email"
-                                        {...register("email", {
-                                            required: "Email is required",
-                                            pattern: {
-                                                value: /^[a-zA-Z0-9._%+-]+@gmail\.com$/
-                                            }
-                                        })}
-                                    />
+                                    <input  type="text"  id="email1"  placeholder="Enter Your Email" {...register("email")} />
 
-                                    {errors.email && (
-                                        <p className="error-message">{errors.email.message}</p>
-                                    )}
+
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="pass1">Password<span>*</span></label>
@@ -79,19 +112,17 @@ let Signup = () =>{
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="pass2">Confirm Password<span>*</span></label>
-                                    <input type="password" {...register("confirmPassword",{required:"Confirm Password is required",validate: value=> value==password || ""})} placeholder="Password" id="pass2" required/>
+                                    <input type="password" {...register("confirmPassword",{required:"Confirm Password is required",validate: value => {
+                                            (value===password)?setConPass(true):setConPass(false);
+                                        }})} placeholder="Password" id="pass2" required/>
                                 </div>
-                                <div className="form-group checkgroup">
+                                <div className={"form-group checkgroup"}>
                                     <input
                                         type="checkbox"
-                                        id="terms"
-                                        {...register("terms", {
-                                            required: true
-                                        })}
-                                        className={errors.terms ? "checkbox-error" : ""}
-                                    />
-                                    <label htmlFor="bal">I agree to the <NavLink as={Link} to="#0">Terms, Privacy Policy</NavLink> and <a
-                                        href="#0">Fees</a></label>
+                                        id="terms"{...register("terms")}/>
+                                    <label htmlFor="terms">
+                                        I agree to the <NavLink as={Link} to="#0">Terms, Privacy Policy</NavLink> and <a href="#0">Fees</a>
+                                    </label>
                                 </div>
                                 <div className="form-group text-center">
                                     <input type="submit" value="Sign Up"/>
@@ -122,6 +153,7 @@ let Signup = () =>{
                     </div>
                 </div>
             </section>
+            )}
         </>
     )
 }

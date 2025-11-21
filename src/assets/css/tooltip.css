@@ -1,0 +1,148 @@
+/* ============================================== */
+/* 1. Global SweetAlert2 Overrides (Standard Alerts) */
+/* ============================================== */
+
+/* Ensures the standard alerts (Success, Error, Warning, Info) match the dark, compact theme */
+.movie-swal-popup-small {
+    /* Theme */
+    border-radius: 8px !important;
+    box-shadow: 0 2px 15px rgba(110, 128, 229, 0.3) !important;
+
+    /* Size Reduction */
+    padding: 1rem !important;
+    font-size: 0.9rem !important;
+}
+
+/* Reduces the size of the main icon */
+.movie-swal-popup-small .swal2-icon {
+    width: 3.5em !important;
+    height: 3.5em !important;
+    margin-bottom: 0.5rem !important;
+}
+
+/* Reduces the title font size */
+.movie-swal-popup-small .swal2-title {
+    font-size: 1.2rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+/* Reduces the confirm button padding/size (The accent color button) */
+.movie-swal-confirm-button-small {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.9rem !important;
+    /* This color is set in JS but ensures consistency */
+    background-color: #6e80e5 !important;
+}
+
+
+/* ================================================== */
+/* 2. Form Validation Error (The Cute Curved Box) */
+/* ================================================== */
+
+/* Minimal, very small dark box for form validation feedback */
+.movie-swal-form-error {
+    /* Cute, Curved Theme */
+    border-radius: 15px !important;
+    box-shadow: 0 0 10px rgba(214, 48, 49, 0.5) !important;
+    border: 1px solid rgba(214, 48, 49, 0.3);
+
+    /* Size & Layout Reduction */
+    width: 250px !important;
+    padding: 0.8rem !important;
+}
+
+/* Drastically reduce the icon size */
+.movie-swal-form-error .swal2-icon {
+    width: 2em !important;
+    height: 2em !important;
+    margin: 0 !important;
+    align-self: center;
+}
+
+/* Reduce and adjust title font */
+.movie-swal-form-error-title {
+    font-size: 1rem !important;
+    margin: 0 0 0.2rem 0 !important;
+    padding: 0 !important;
+}
+
+/* Reduce and adjust message text font */
+.movie-swal-form-error-text {
+    font-size: 0.85rem !important;
+    padding: 0 0.5rem 0 0.5rem !important;
+    margin: 0 !important;
+}
+
+
+/* ================================================== */
+/* 3. Input Tooltip Error (The White Popover) */
+/* ================================================== */
+
+/* 1. Base Tooltip Styling (White box, curved, static width) */
+.movie-tooltip-popup {
+    /* Appearance */
+    background-color: white !important;
+    color: #121633 !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 6px !important;
+    position: relative; /* Needed for the ::before pointer element */
+
+    /* Size & Layout */
+    width: 250px !important; /* FIXED STATIC WIDTH */
+    padding: 0.5rem 1rem !important;
+    min-width: 150px;
+    max-width: 300px;
+
+    /* Positioning (You will need to adjust the margin-top/transform in your app) */
+    /* Example adjustment to move it down/right: */
+    /* margin-top: 150px !important; */
+    /* transform: translateX(200px); */
+
+    /* --- ANIMATION FIX: PREVENT SHRINKING --- */
+    animation-name: none !important;
+    transform: none !important;
+
+    /* Target the SweetAlert2 closing animation to apply a simple fade-out */
+    &.swal2-hide {
+        animation-name: none !important;
+        transform: none !important;
+        opacity: 0 !important;
+        transition: opacity 0.3s ease-out; /* Fade out instead of shrink */
+    }
+}
+
+/* 2. Custom Pointer Arrow (The small triangle) */
+.movie-tooltip-popup::before {
+    content: "";
+    position: absolute;
+    top: -10px; /* Position above the box */
+    left: 50%; /* Center the arrow horizontally */
+    transform: translateX(-50%);
+
+    /* Create the triangle shape */
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid white; /* Same color as the background */
+    z-index: 1000;
+}
+
+/* 3. Icon and Text Styling */
+.movie-tooltip-popup .movie-tooltip-icon {
+    width: 1.5em !important;
+    height: 1.5em !important;
+    margin: 0 !important;
+    color: #ff8c00 !important; /* Force the orange color for the icon */
+    border: none !important;
+}
+
+.movie-tooltip-popup .movie-tooltip-text {
+    font-size: 0.9rem !important;
+    padding: 0 0 0 0.5rem !important;
+    margin: 0 !important;
+    display: flex;
+    align-items: center;
+}
+
+

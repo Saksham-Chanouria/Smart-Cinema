@@ -13,6 +13,7 @@ import './assets/css/nice-select.css'
 import './assets/css/odometer.css'
 import './assets/css/owl.carousel.min.css'
 import './assets/css/owl.theme.default.min.css'
+import './assets/css/tooltip.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
