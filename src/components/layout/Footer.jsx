@@ -24,7 +24,7 @@ let Footer = () => {
                 <div className="container">
                     <div className="footer-top">
                         <div className="logo">
-                            <NavLink as={Link} to="index-1.html">
+                            <NavLink as={Link} to="/">
                                 <img src={logo} alt="footer"/>
                             </NavLink>
                         </div>

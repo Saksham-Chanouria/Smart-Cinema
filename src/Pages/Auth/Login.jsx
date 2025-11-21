@@ -5,13 +5,14 @@ import background from "../../assets/images/account/account-bg.jpg"
 import {useState} from "react";
 import PreLoader from "../../components/layout/PreLoader.jsx";
 import {showWarning,showError,showServerError,showInputTooltipError} from "../../components/utils/alert.jsx";
-
+import {useAuth} from "../../context/AuthContext.jsx";
 
 
 let Login = () => {
     const {register, handleSubmit} = useForm()
     const navigate = useNavigate();
     const gmailRegex = /^[A-Za-z0-9._%+-]+@gmail\.com$/;
+    const {login} = useAuth();
 
 
     var [loading, setLoading] = useState(false);
@@ -37,8 +38,7 @@ let Login = () => {
                     console.log(data)
                     if (data.statusCode === 200) {
                         console.log("Login success");
-                        localStorage.setItem("token", data.token);
-                        localStorage.setItem("firstName", data.firstName);
+                        login(data.token,data.firstName);
                         setTimeout(() => {
                             setLoading(false);
                             navigate("/home");

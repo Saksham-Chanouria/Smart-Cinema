@@ -5,6 +5,7 @@ import Signup from "./Pages/Auth/Signup.jsx";
 import Login from "./Pages/Auth/Login.jsx";
 import NotFound from "./Pages/Utils/NotFound.jsx";
 import PreLoader from "./components/layout/PreLoader.jsx";
+import RedirectToHome from "./components/layout/RedirectToHome.jsx";
 
 
 
@@ -20,8 +21,8 @@ function App() {
                 </Route>
 
                 <Route path="/">
-                    <Route path={"login"} element={<Login/>}></Route>
-                    <Route path={"signup"} element={<Signup/>}></Route>
+                    <Route path={"login"} element={<RedirectToHome><Login/></RedirectToHome>}></Route>
+                    <Route path={"signup"} element={<RedirectToHome><Signup/></RedirectToHome>}></Route>
                 </Route>
 
                 <Route path="*" element={<NotFound/>}></Route>

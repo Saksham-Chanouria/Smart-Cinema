@@ -1,12 +1,19 @@
 import {NavLink} from "react-router-dom";
-import {Link} from "react-router-dom";
+import {Link,useNavigate} from "react-router-dom";
 import logo from "../../assets/images/logo/logo.png";
 import {useEffect, useState} from "react";
+import {useAuth} from "../../context/AuthContext.jsx";
+import PreLoader from "./PreLoader.jsx";
+
 
 let Header = () =>{
     const [isActive, setIsActive] = useState(false);
+    const {isLoggedIn,firstName,logout} = useAuth();
+    const navigate = useNavigate();
+    const [loading,setLoading] = useState(false);
 
     useEffect(() => {
+        setLoading(false);
         const handleScroll = () => {
             if (window.scrollY > 50) {
                 setIsActive(true);
@@ -22,14 +29,8 @@ let Header = () =>{
 
     return(
         <>
-            {/*<div className="preloader">*/}
-            {/*    <div className="preloader-inner">*/}
-            {/*        <div className="preloader-icon">*/}
-            {/*            <span></span>*/}
-            {/*            <span></span>*/}
-            {/*        </div>*/}
-            {/*    </div>*/}
-            {/*</div>*/}
+            {loading && <PreLoader />}
+            {!loading &&
             <header className={`header-section ${isActive ? "header-active" : ""}`}>
                 <div className="container">
                     <div className="header-wrapper">
@@ -121,9 +122,29 @@ let Header = () =>{
                             <li>
                                 <Link as={Link} to="contact.html">contact</Link>
                             </li>
-                            <li className="header-button pr-0">
-                                <Link as={Link} to="/signup">join us</Link>
-                            </li>
+                            {isLoggedIn ? (
+                                    <>
+                                        <li>
+                                            Welcome, {firstName}
+                                        </li>
+                                        <li className="header-button pr-0">
+                                            <Link as={Link} onClick={()=>{
+                                                setLoading(true)
+                                                setTimeout(() => {
+                                                    logout();
+                                                    navigate("/home");
+                                                    setLoading(false);
+                                                }, 700)
+                                            }}>Logout</Link>
+                                        </li>
+                                    </>
+                            ):
+                                (
+                                    <li className="header-button pr-0">
+                                        <Link as={Link} to="/signup">join us</Link>
+                                    </li>
+                                )
+                            }
                         </ul>
                         <div className="header-bar d-lg-none">
                             <span></span>
@@ -133,6 +154,7 @@ let Header = () =>{
                     </div>
                 </div>
             </header>
+            }
         </>
     )
 }
