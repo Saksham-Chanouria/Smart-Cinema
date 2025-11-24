@@ -42,14 +42,6 @@ let Header = () =>{
                         <ul className="menu">
                             <li>
                                 <NavLink as={Link} to="/home" className="active">Home</NavLink>
-                                <ul className="submenu">
-                                    <li>
-                                        <NavLink as={Link} to="/home" className="active">Home One</NavLink>
-                                    </li>
-                                    <li>
-                                        <NavLink as={Link} to="/home">Home Two</NavLink>
-                                    </li>
-                                </ul>
                             </li>
                             {/*<li>*/}
                             {/*    <a href="#0">movies</a>*/}
